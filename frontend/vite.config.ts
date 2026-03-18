@@ -12,4 +12,8 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+   preview: {
+    allowedHosts: ['ecom-easybuy-frontend-production.up.railway.app']
+    // You can also use a wildcard: allowedHosts: ['.railway.app']
+  }
 });
