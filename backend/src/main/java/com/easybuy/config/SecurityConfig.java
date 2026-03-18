@@ -1,5 +1,5 @@
 package com.easybuy.config;
-
+import org.springframework.http.HttpMethod;
 import com.easybuy.security.AuthEntryPointJwt;
 import com.easybuy.security.AuthTokenFilter;
 import org.springframework.beans.factory.annotation.Autowired;
