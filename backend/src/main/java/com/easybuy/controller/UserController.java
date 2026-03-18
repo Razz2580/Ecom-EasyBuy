@@ -48,6 +48,9 @@ public class UserController {
         if (request.containsKey("phone")) {
             user.setPhone(request.get("phone"));
         }
+         if (request.containsKey("address")) {               // ← added
+        user.setAddress(request.get("address"));
+    }
         
         User updatedUser = userRepository.save(user);
         
@@ -56,6 +59,7 @@ public class UserController {
                 "email", updatedUser.getEmail(),
                 "fullName", updatedUser.getFullName(),
                 "phone", updatedUser.getPhone(),
+                "address", updatedUser.getAddress(),         // ← added
                 "role", updatedUser.getRole()
         ));
     }
