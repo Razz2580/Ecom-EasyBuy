@@ -62,6 +62,11 @@ public class SecurityConfig {
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
         configuration.setAllowCredentials(true);
+        configuration.setAllowedOrigins(Arrays.asList(
+    "http://localhost:5173",
+    "http://localhost:3000",
+    "https://your-frontend.up.railway.app"   // ← add your actual frontend URL
+));
         
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
