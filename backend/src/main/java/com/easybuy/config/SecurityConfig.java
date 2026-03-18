@@ -58,14 +58,11 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173", "http://localhost:3000"));
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173", "http://localhost:3000", "https://ecom-easybuy-frontend-production.up.railway.app" ));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
         configuration.setAllowCredentials(true);
-        configuration.setAllowedOrigins(Arrays.asList(
-    "http://localhost:5173",
-    "http://localhost:3000",
-    "https://ecom-easybuy-frontend-production.up.railway.app"   // ← add your actual frontend URL
+       
 ));
         
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
@@ -80,11 +77,13 @@ public class SecurityConfig {
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth ->
-                        auth.requestMatchers("/api/auth/**").permitAll()
-                            .requestMatchers("/ws/**").permitAll()
-                            .requestMatchers("/api/public/**").permitAll()
-                                .requestMatchers("/api/products/addProduct").hasRole("SELLER")
-                            .anyRequest().authenticated()
+                           .authorizeHttpRequests(auth ->
+                         auth.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()   // ← add this line
+                         .requestMatchers("/api/auth/**").permitAll()
+                         .requestMatchers("/ws/**").permitAll()
+                         .requestMatchers("/api/public/**").permitAll()
+                         .requestMatchers("/api/products/addProduct").hasRole("SELLER")
+                         .anyRequest().authenticated()
                 );
 
         http.authenticationProvider(authenticationProvider());
