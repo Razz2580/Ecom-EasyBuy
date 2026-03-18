@@ -126,7 +126,7 @@ class ApiService {
   }
 
   async createProduct(data: { name: string; description?: string; price: number; category?: string; imageUrl?: string; stock: number }) {
-    const response = await this.api.post('/products', data);
+   const response = await this.api.post('/products/addProduct', data);
     return response.data;
   }
 
