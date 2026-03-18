@@ -77,8 +77,7 @@ public class SecurityConfig {
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth ->
-                           .authorizeHttpRequests(auth ->
-                         auth.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()   // ← add this line
+                         auth.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()   
                          .requestMatchers("/api/auth/**").permitAll()
                          .requestMatchers("/ws/**").permitAll()
                          .requestMatchers("/api/public/**").permitAll()
