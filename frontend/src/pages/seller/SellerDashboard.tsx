@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Store, Package, ShoppingCart, Plus, MapPin, Bell, LogOut, DollarSign, TrendingUp } from 'lucide-react';
+import { Store, Package, ShoppingCart, Plus, MapPin, Bell, LogOut, DollarSign, TrendingUp, Bike } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -43,7 +43,6 @@ export default function SellerDashboard() {
         prev.map((o) => (o.id === orderUpdate.id ? { ...o, ...orderUpdate } : o))
       );
     });
-
     webSocketService.subscribe('notifications', (notification) => {
       setNotifications((prev) => [notification, ...prev]);
       setUnreadCount((prev) => prev + 1);
@@ -99,22 +98,16 @@ export default function SellerDashboard() {
 
   const handleUpdateLocation = async () => {
     if (!navigator.geolocation) return;
-    
     navigator.geolocation.getCurrentPosition(
       async (position) => {
         try {
-          await apiService.updateSellerLocation(
-            position.coords.latitude,
-            position.coords.longitude
-          );
+          await apiService.updateSellerLocation(position.coords.latitude, position.coords.longitude);
           loadData();
         } catch (error) {
           console.error('Error updating location:', error);
         }
       },
-      (error) => {
-        console.error('Error getting location:', error);
-      }
+      (error) => console.error('Error getting location:', error)
     );
   };
 
@@ -130,6 +123,17 @@ export default function SellerDashboard() {
     }
   };
 
+  const handleRequestRider = async (orderId: number) => {
+    try {
+      await apiService.requestRiderDelivery(orderId);
+      alert('Rider requested successfully');
+      loadData(); // refresh orders
+    } catch (error) {
+      console.error('Error requesting rider:', error);
+      alert('Failed to request rider');
+    }
+  };
+
   const pendingOrders = orders.filter((o) => o.status === OrderStatus.PENDING);
   const totalRevenue = orders
     .filter((o) => o.status === OrderStatus.DELIVERED)
@@ -137,7 +141,6 @@ export default function SellerDashboard() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
       <header className="bg-white shadow-sm sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
@@ -149,24 +152,19 @@ export default function SellerDashboard() {
               >
                 <Store className="w-5 h-5 text-white" />
               </motion.div>
-             <div>
-              <Link to="/profile">
-                <h1 className="text-xl font-bold text-gray-900 cursor-pointer hover:text-blue-600">
+              <div>
+                <Link to="/profile">
+                  <h1 className="text-xl font-bold text-gray-900 cursor-pointer hover:text-blue-600">
                     {user?.fullName || 'My Store'}
-                </h1>
-              </Link>
-              <p className="text-xs text-gray-500">Seller Dashboard</p>
+                  </h1>
+                </Link>
+                <p className="text-xs text-gray-500">Seller Dashboard</p>
               </div>
-         </div>
+            </div>
 
             <div className="flex items-center space-x-4">
-              {/* Notifications */}
               <div className="relative">
-                <Button
-                  size="icon"
-                  variant="ghost"
-                  onClick={() => setShowNotifications(!showNotifications)}
-                >
+                <Button size="icon" variant="ghost" onClick={() => setShowNotifications(!showNotifications)}>
                   <Bell className="w-5 h-5" />
                   {unreadCount > 0 && (
                     <Badge className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 bg-red-500">
@@ -174,7 +172,6 @@ export default function SellerDashboard() {
                     </Badge>
                   )}
                 </Button>
-
                 <AnimatePresence>
                   {showNotifications && (
                     <NotificationPanel
@@ -194,9 +191,7 @@ export default function SellerDashboard() {
         </div>
       </header>
 
-      {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Stats */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
           <Card>
             <CardContent className="p-4 flex items-center space-x-4">
@@ -227,7 +222,7 @@ export default function SellerDashboard() {
               </div>
               <div>
                 <p className="text-sm text-gray-500">Revenue</p>
-                <p className="text-2xl font-bold">${totalRevenue.toFixed(2)}</p>
+                <p className="text-2xl font-bold">₹{totalRevenue.toFixed(2)}</p>
               </div>
             </CardContent>
           </Card>
@@ -244,7 +239,6 @@ export default function SellerDashboard() {
           </Card>
         </div>
 
-        {/* Location Update */}
         <Card className="mb-6">
           <CardContent className="p-4 flex items-center justify-between">
             <div className="flex items-center space-x-2">
@@ -263,14 +257,10 @@ export default function SellerDashboard() {
 
         <Tabs defaultValue="products" className="space-y-6">
           <TabsList className="grid w-full grid-cols-2 lg:w-auto">
-            <TabsTrigger value="products">
-              <Package className="w-4 h-4 mr-2" /> Products
-            </TabsTrigger>
+            <TabsTrigger value="products"><Package className="w-4 h-4 mr-2" /> Products</TabsTrigger>
             <TabsTrigger value="orders">
               <ShoppingCart className="w-4 h-4 mr-2" /> Orders
-              {pendingOrders.length > 0 && (
-                <Badge className="ml-2 bg-yellow-500">{pendingOrders.length}</Badge>
-              )}
+              {pendingOrders.length > 0 && <Badge className="ml-2 bg-yellow-500">{pendingOrders.length}</Badge>}
             </TabsTrigger>
           </TabsList>
 
@@ -297,19 +287,11 @@ export default function SellerDashboard() {
             ) : products.length > 0 ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {products.map((product) => (
-                  <motion.div
-                    key={product.id}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                  >
+                  <motion.div key={product.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
                     <Card className="overflow-hidden">
                       <div className="h-40 bg-gray-100 flex items-center justify-center">
                         {product.imageUrl ? (
-                          <img
-                            src={product.imageUrl}
-                            alt={product.name}
-                            className="w-full h-full object-cover"
-                          />
+                          <img src={product.imageUrl} alt={product.name} className="w-full h-full object-cover" />
                         ) : (
                           <Package className="w-12 h-12 text-gray-300" />
                         )}
@@ -318,25 +300,12 @@ export default function SellerDashboard() {
                         <h3 className="font-semibold text-gray-900">{product.name}</h3>
                         <p className="text-sm text-gray-500 line-clamp-2">{product.description}</p>
                         <div className="flex items-center justify-between mt-3">
-                          <span className="font-bold text-blue-600">${product.price.toFixed(2)}</span>
+                          <span className="font-bold text-blue-600">₹{product.price.toFixed(2)}</span>
                           <span className="text-sm text-gray-500">Stock: {product.stock}</span>
                         </div>
                         <div className="flex space-x-2 mt-3">
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            className="flex-1"
-                            onClick={() => { setEditingProduct(product); setShowProductForm(true); }}
-                          >
-                            Edit
-                          </Button>
-                          <Button
-                            variant="destructive"
-                            size="sm"
-                            onClick={() => handleDeleteProduct(product.id)}
-                          >
-                            Delete
-                          </Button>
+                          <Button variant="outline" size="sm" className="flex-1" onClick={() => { setEditingProduct(product); setShowProductForm(true); }}>Edit</Button>
+                          <Button variant="destructive" size="sm" onClick={() => handleDeleteProduct(product.id)}>Delete</Button>
                         </div>
                       </CardContent>
                     </Card>
@@ -348,9 +317,7 @@ export default function SellerDashboard() {
                 <CardContent>
                   <Package className="w-12 h-12 mx-auto text-gray-300 mb-4" />
                   <p className="text-gray-500">No products yet</p>
-                  <Button onClick={() => setShowProductForm(true)} className="mt-4">
-                    Add Your First Product
-                  </Button>
+                  <Button onClick={() => setShowProductForm(true)} className="mt-4">Add Your First Product</Button>
                 </CardContent>
               </Card>
             )}
@@ -359,7 +326,20 @@ export default function SellerDashboard() {
           <TabsContent value="orders" className="space-y-4">
             {orders.length > 0 ? (
               orders.map((order) => (
-                <SellerOrderCard key={order.id} order={order} onUpdate={loadData} />
+                <div key={order.id} className="relative">
+                  <SellerOrderCard order={order} onUpdate={loadData} />
+                  {order.status === OrderStatus.PENDING && (
+                    <div className="absolute top-2 right-2">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => handleRequestRider(order.id)}
+                      >
+                        <Bike className="w-4 h-4 mr-1" /> Request Rider
+                      </Button>
+                    </div>
+                  )}
+                </div>
               ))
             ) : (
               <Card className="text-center py-12">
@@ -373,7 +353,6 @@ export default function SellerDashboard() {
         </Tabs>
       </main>
 
-      {/* Product Form Dialog */}
       <Dialog open={showProductForm} onOpenChange={setShowProductForm}>
         <DialogContent className="max-w-lg">
           <DialogHeader>
