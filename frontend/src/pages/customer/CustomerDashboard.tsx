@@ -130,13 +130,17 @@ export default function CustomerDashboard() {
     }
   };
 
-  const activeOrders = orders.filter((o) =>
-    [OrderStatus.PENDING, OrderStatus.ACCEPTED, OrderStatus.SELLER_DELIVERING, OrderStatus.RIDER_ASSIGNED, OrderStatus.PICKED_UP].includes(o.status)
-  );
+ const activeStatuses: OrderStatus[] = [
+  OrderStatus.PENDING,
+  OrderStatus.ACCEPTED,
+  OrderStatus.SELLER_DELIVERING,
+  OrderStatus.RIDER_ASSIGNED,
+  OrderStatus.PICKED_UP,
+];
+const activeOrders = orders.filter((o) => activeStatuses.includes(o.status));
 
-  const orderHistory = orders.filter((o) =>
-    [OrderStatus.DELIVERED, OrderStatus.CANCELLED].includes(o.status)
-  );
+const historyStatuses: OrderStatus[] = [OrderStatus.DELIVERED, OrderStatus.CANCELLED];
+const orderHistory = orders.filter((o) => historyStatuses.includes(o.status));
 
   return (
     <div className="min-h-screen bg-gray-50">
