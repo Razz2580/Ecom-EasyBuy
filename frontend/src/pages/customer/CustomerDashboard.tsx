@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, MapPin, ShoppingCart, Bell, LogOut, Star, Package } from 'lucide-react';
@@ -214,18 +215,14 @@ export default function CustomerDashboard() {
                 </AnimatePresence>
               </div>
 
-              {/* User Menu */}
-              <div className="flex items-center space-x-2">
-                <span className="hidden sm:block text-sm font-medium">{user?.fullName}</span>
-              </div>
-
-              <Button size="icon" variant="ghost" onClick={logout}>
-                <LogOut className="w-5 h-5" />
-              </Button>
-            </div>
-          </div>
-        </div>
-      </header>
+ {/* User Menu */}
+<div className="flex items-center space-x-2">
+  <Link to="/profile">
+    <span className="hidden sm:block text-sm font-medium cursor-pointer hover:text-blue-600">
+      {user?.fullName}
+    </span>
+  </Link>
+</div>
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
