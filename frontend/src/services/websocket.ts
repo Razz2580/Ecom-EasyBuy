@@ -2,6 +2,7 @@ import SockJS from 'sockjs-client';
 import { Client, type IMessage } from '@stomp/stompjs';
 import { apiService } from './api';
 
+// Compute WebSocket URL from the same API base used by axios
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
 const WS_URL = API_BASE_URL.replace(/^http/, 'ws').replace(/\/api$/, '') + '/ws';
 
@@ -31,10 +32,7 @@ class WebSocketService {
 
     this.client.onConnect = (frame) => {
       console.log('WebSocket connected:', frame);
-      
-      // Subscribe to user-specific queues
       this.subscribeToUserQueues();
-      
       onConnect?.();
     };
 
@@ -61,31 +59,26 @@ class WebSocketService {
     const user = apiService.getCurrentUser();
     if (!user) return;
 
-    // Subscribe to notifications
     this.client.subscribe(`/user/${user.userId}/queue/notifications`, (message: IMessage) => {
       const notification = JSON.parse(message.body);
       this.subscriptions.get('notifications')?.(notification);
     });
 
-    // Subscribe to order updates
     this.client.subscribe(`/user/${user.userId}/queue/orders`, (message: IMessage) => {
       const orderUpdate = JSON.parse(message.body);
       this.subscriptions.get('orders')?.(orderUpdate);
     });
 
-    // Subscribe to delivery requests (for riders)
     this.client.subscribe(`/user/${user.userId}/queue/delivery-requests`, (message: IMessage) => {
       const deliveryRequest = JSON.parse(message.body);
       this.subscriptions.get('delivery-requests')?.(deliveryRequest);
     });
 
-    // Subscribe to rider location updates (for customers)
     this.client.subscribe(`/user/${user.userId}/queue/rider-location`, (message: IMessage) => {
       const location = JSON.parse(message.body);
       this.subscriptions.get('rider-location')?.(location);
     });
 
-    // Subscribe to broadcast delivery requests (for riders)
     if (user.role === 'RIDER') {
       this.client.subscribe('/topic/delivery-requests', (message: IMessage) => {
         const deliveryRequest = JSON.parse(message.body);
@@ -107,7 +100,6 @@ class WebSocketService {
       console.error('WebSocket not connected');
       return;
     }
-
     this.client.publish({
       destination: `/app${destination}`,
       body: JSON.stringify(body),
