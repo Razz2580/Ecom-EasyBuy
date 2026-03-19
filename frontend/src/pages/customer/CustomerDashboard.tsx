@@ -15,7 +15,7 @@ import ProductCard from '@/components/customer/ProductCard';
 import OrderCard from '@/components/customer/OrderCard';
 import ProductDetail from '@/components/customer/ProductDetail';
 import NotificationPanel from '@/components/common/NotificationPanel';
-import { Link } from 'react-router-dom'; // added for profile link
+import { Link } from 'react-router-dom';
 
 export default function CustomerDashboard() {
   const { user, logout } = useAuth();
@@ -30,18 +30,12 @@ export default function CustomerDashboard() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Get user location
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
-          setLocation({
-            lat: position.coords.latitude,
-            lng: position.coords.longitude,
-          });
+          setLocation({ lat: position.coords.latitude, lng: position.coords.longitude });
         },
-        (error) => {
-          console.error('Error getting location:', error);
-        }
+        (error) => console.error('Error getting location:', error)
       );
     }
 
@@ -55,18 +49,13 @@ export default function CustomerDashboard() {
   }, []);
 
   useEffect(() => {
-    if (location) {
-      loadNearbyProducts();
-    }
+    if (location) loadNearbyProducts();
   }, [location]);
 
   const setupWebSocket = () => {
     webSocketService.subscribe('orders', (orderUpdate) => {
-      setOrders((prev) =>
-        prev.map((o) => (o.id === orderUpdate.id ? { ...o, ...orderUpdate } : o))
-      );
+      setOrders((prev) => prev.map((o) => (o.id === orderUpdate.id ? { ...o, ...orderUpdate } : o)));
     });
-
     webSocketService.subscribe('notifications', (notification) => {
       setNotifications((prev) => [notification, ...prev]);
       setUnreadCount((prev) => prev + 1);
@@ -116,11 +105,7 @@ export default function CustomerDashboard() {
 
   const handlePlaceOrder = async (productId: number, quantity: number, deliveryAddress: string) => {
     try {
-      const orderData: any = {
-        productId,
-        quantity,
-        deliveryAddress,
-      };
+      const orderData: any = { productId, quantity, deliveryAddress };
       if (location) {
         orderData.customerLatitude = location.lat;
         orderData.customerLongitude = location.lng;
@@ -146,20 +131,15 @@ export default function CustomerDashboard() {
   };
 
   const activeOrders = orders.filter((o) =>
-    o.status === OrderStatus.PENDING || 
-    o.status === OrderStatus.ACCEPTED || 
-    o.status === OrderStatus.SELLER_DELIVERING || 
-    o.status === OrderStatus.RIDER_ASSIGNED || 
-    o.status === OrderStatus.PICKED_UP
+    [OrderStatus.PENDING, OrderStatus.ACCEPTED, OrderStatus.SELLER_DELIVERING, OrderStatus.RIDER_ASSIGNED, OrderStatus.PICKED_UP].includes(o.status)
   );
 
   const orderHistory = orders.filter((o) =>
-    o.status === OrderStatus.DELIVERED || o.status === OrderStatus.CANCELLED
+    [OrderStatus.DELIVERED, OrderStatus.CANCELLED].includes(o.status)
   );
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
       <header className="bg-white shadow-sm sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
@@ -175,7 +155,6 @@ export default function CustomerDashboard() {
             </div>
 
             <div className="flex items-center space-x-4">
-              {/* Search */}
               <div className="hidden md:flex items-center space-x-2">
                 <Input
                   placeholder="Search products..."
@@ -189,13 +168,8 @@ export default function CustomerDashboard() {
                 </Button>
               </div>
 
-              {/* Notifications */}
               <div className="relative">
-                <Button
-                  size="icon"
-                  variant="ghost"
-                  onClick={() => setShowNotifications(!showNotifications)}
-                >
+                <Button size="icon" variant="ghost" onClick={() => setShowNotifications(!showNotifications)}>
                   <Bell className="w-5 h-5" />
                   {unreadCount > 0 && (
                     <Badge className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 bg-red-500">
@@ -203,7 +177,6 @@ export default function CustomerDashboard() {
                     </Badge>
                   )}
                 </Button>
-
                 <AnimatePresence>
                   {showNotifications && (
                     <NotificationPanel
@@ -215,7 +188,6 @@ export default function CustomerDashboard() {
                 </AnimatePresence>
               </div>
 
-              {/* User Menu */}
               <div className="flex items-center space-x-2">
                 <Link to="/profile">
                   <span className="hidden sm:block text-sm font-medium cursor-pointer hover:text-blue-600">
@@ -232,26 +204,18 @@ export default function CustomerDashboard() {
         </div>
       </header>
 
-      {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <Tabs defaultValue="browse" className="space-y-6">
           <TabsList className="grid w-full grid-cols-3 lg:w-auto">
-            <TabsTrigger value="browse">
-              <Search className="w-4 h-4 mr-2" /> Browse
-            </TabsTrigger>
+            <TabsTrigger value="browse"><Search className="w-4 h-4 mr-2" /> Browse</TabsTrigger>
             <TabsTrigger value="orders">
               <Package className="w-4 h-4 mr-2" /> My Orders
-              {activeOrders.length > 0 && (
-                <Badge className="ml-2 bg-blue-500">{activeOrders.length}</Badge>
-              )}
+              {activeOrders.length > 0 && <Badge className="ml-2 bg-blue-500">{activeOrders.length}</Badge>}
             </TabsTrigger>
-            <TabsTrigger value="history">
-              <Star className="w-4 h-4 mr-2" /> History
-            </TabsTrigger>
+            <TabsTrigger value="history"><Star className="w-4 h-4 mr-2" /> History</TabsTrigger>
           </TabsList>
 
           <TabsContent value="browse" className="space-y-6">
-            {/* Location Info */}
             {location && (
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
@@ -263,7 +227,6 @@ export default function CustomerDashboard() {
               </motion.div>
             )}
 
-            {/* Products Grid */}
             {isLoading ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 {[...Array(8)].map((_, i) => (
@@ -285,10 +248,7 @@ export default function CustomerDashboard() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: index * 0.05 }}
                   >
-                    <ProductCard
-                      product={product}
-                      onClick={() => setSelectedProduct(product)}
-                    />
+                    <ProductCard product={product} onClick={() => setSelectedProduct(product)} />
                   </motion.div>
                 ))}
               </div>
@@ -297,9 +257,7 @@ export default function CustomerDashboard() {
                 <CardContent>
                   <ShoppingCart className="w-12 h-12 mx-auto text-gray-300 mb-4" />
                   <p className="text-gray-500">No products found nearby</p>
-                  <Button onClick={loadNearbyProducts} className="mt-4">
-                    Refresh
-                  </Button>
+                  <Button onClick={loadNearbyProducts} className="mt-4">Refresh</Button>
                 </CardContent>
               </Card>
             )}
@@ -307,9 +265,7 @@ export default function CustomerDashboard() {
 
           <TabsContent value="orders" className="space-y-4">
             {activeOrders.length > 0 ? (
-              activeOrders.map((order) => (
-                <OrderCard key={order.id} order={order} />
-              ))
+              activeOrders.map((order) => <OrderCard key={order.id} order={order} />)
             ) : (
               <Card className="text-center py-12">
                 <CardContent>
@@ -322,9 +278,7 @@ export default function CustomerDashboard() {
 
           <TabsContent value="history" className="space-y-4">
             {orderHistory.length > 0 ? (
-              orderHistory.map((order) => (
-                <OrderCard key={order.id} order={order} />
-              ))
+              orderHistory.map((order) => <OrderCard key={order.id} order={order} />)
             ) : (
               <Card className="text-center py-12">
                 <CardContent>
@@ -337,7 +291,6 @@ export default function CustomerDashboard() {
         </Tabs>
       </main>
 
-      {/* Product Detail Dialog */}
       <Dialog open={!!selectedProduct} onOpenChange={() => setSelectedProduct(null)}>
         <DialogContent className="max-w-2xl">
           {selectedProduct && (
