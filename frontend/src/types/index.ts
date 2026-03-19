@@ -156,6 +156,8 @@ export interface AuthResponse {
   role: UserRoleType;
   sellerId?: number;
   riderId?: number;
+  phone?: string;      // add this
+  address?: string;    
 }
 
 export interface RegisterRequest {
