@@ -87,7 +87,7 @@ class ApiService {
     return response.data;
   }
 
-  async updateUserProfile(data: { fullName?: string; phone?: string }) {
+  async updateUserProfile(data: { fullName?: string; phone?: string; address?: string }) {
     const response = await this.api.put('/user/profile', data);
     return response.data;
   }
