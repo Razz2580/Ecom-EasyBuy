@@ -11,6 +11,7 @@ interface AuthContextType {
   register: (data: RegisterData) => Promise<void>;
   logout: () => void;
   hasRole: (role: typeof UserRole[keyof typeof UserRole]) => boolean;
+  updateUser: (userData: AuthResponse) => void;  // <-- new
 }
 
 interface RegisterData {
@@ -87,12 +88,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         register,
         logout,
         hasRole,
+        updateUser,
       }}
     >
       {children}
     </AuthContext.Provider>
   );
 }
+
 
 export function useAuth() {
   const context = useContext(AuthContext);
