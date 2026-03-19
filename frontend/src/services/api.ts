@@ -88,9 +88,9 @@ class ApiService {
   }
 
   async updateUserProfile(data: { fullName?: string; phone?: string; address?: string }) {
-    const response = await this.api.put('/user/profile', data);
-    return response.data;
-  }
+  const response = await this.api.put('/user/profile', data);
+  return response.data;
+}
 
   // Product APIs
   async getAllProducts() {
