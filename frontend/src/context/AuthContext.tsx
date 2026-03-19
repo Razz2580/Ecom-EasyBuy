@@ -30,8 +30,10 @@ interface RegisterData {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
+
   const [user, setUser] = useState<AuthResponse | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  
 
   useEffect(() => {
     // Check for stored user on mount
@@ -76,6 +78,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const hasRole = (role: typeof UserRole[keyof typeof UserRole]): boolean => {
     return user?.role === role;
+  };
+
+  const updateUser = (userData: AuthResponse) => {
+    setUser(userData);
+    localStorage.setItem('user', JSON.stringify(userData));
   };
 
   return (
