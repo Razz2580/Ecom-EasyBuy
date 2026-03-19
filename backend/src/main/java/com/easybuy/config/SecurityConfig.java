@@ -82,7 +82,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth ->
                         auth.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                                 .requestMatchers("/api/auth/**").permitAll()
-                                .requestMatchers("/ws/**").permitAll()
+                                .requestMatchers("/ws/**").permitAll()  // <-- ADD THIS
                                 .requestMatchers("/api/public/**").permitAll()
                                 .requestMatchers("/api/products/addProduct").hasRole("SELLER")
                                 .anyRequest().authenticated()
