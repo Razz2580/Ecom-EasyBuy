@@ -16,7 +16,7 @@ import DeliveryCard from '@/components/rider/DeliveryCard';
 import NotificationPanel from '@/components/common/NotificationPanel';
 
 export default function RiderDashboard() {
-  const { logout } = useAuth();
+  const { user, logout } = useAuth();
   const [rider, setRider] = useState<Rider | null>(null);
   const [availableDeliveries, setAvailableDeliveries] = useState<Delivery[]>([]);
   const [myDeliveries, setMyDeliveries] = useState<Delivery[]>([]);
