@@ -10,6 +10,7 @@ import CustomerDashboard from '@/pages/customer/CustomerDashboard';
 import SellerDashboard from '@/pages/seller/SellerDashboard';
 import RiderDashboard from '@/pages/rider/RiderDashboard';
 import Payment from '@/pages/Payment';
+import ProfilePage from '@/pages/ProfilePage';   // <-- new import
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY || 'pk_test_your_key');
 
@@ -97,6 +98,15 @@ function App() {
               element={
                 <ProtectedRoute allowedRoles={[UserRole.CUSTOMER]}>
                   <Payment />
+                </ProtectedRoute>
+              }
+            />
+            {/* New profile route - accessible to any authenticated user */}
+            <Route
+              path="/profile"
+              element={
+                <ProtectedRoute>
+                  <ProfilePage />
                 </ProtectedRoute>
               }
             />
