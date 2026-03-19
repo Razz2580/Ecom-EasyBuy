@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
-import { apiService } from '@/services/apiService';
-
+import { apiService } from '@/services/api';   // ✅ correct import
 const ProfilePage = () => {
   const { user, updateUser } = useAuth();
   const [fullName, setFullName] = useState(user?.fullName || '');
