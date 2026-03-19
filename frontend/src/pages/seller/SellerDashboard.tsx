@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Store, Package, ShoppingCart, Plus, MapPin, Bell, LogOut, DollarSign, TrendingUp } from 'lucide-react';
@@ -148,11 +149,15 @@ export default function SellerDashboard() {
               >
                 <Store className="w-5 h-5 text-white" />
               </motion.div>
-              <div>
-                <h1 className="text-xl font-bold text-gray-900">{seller?.storeName || 'My Store'}</h1>
-                <p className="text-xs text-gray-500">Seller Dashboard</p>
+             <div>
+              <Link to="/profile">
+              <h1 className="text-xl font-bold text-gray-900 cursor-pointer hover:text-blue-600">
+              {seller?.storeName || 'My Store'}
+              </h1>
+              </Link>
+              <p className="text-xs text-gray-500">Seller Dashboard</p>
               </div>
-            </div>
+         </div>
 
             <div className="flex items-center space-x-4">
               {/* Notifications */}
