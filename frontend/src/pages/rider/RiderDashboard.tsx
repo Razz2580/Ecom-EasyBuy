@@ -199,7 +199,7 @@ export default function RiderDashboard() {
                <h1 className="text-xl font-bold text-gray-900">Rider Dashboard</h1>
                <Link to="/profile">
                <p className="text-xs text-gray-500 cursor-pointer hover:text-blue-600">
-                  {rider?.riderName}
+                  {user?.fullName}
                </p>
                </Link>
                 </div>
