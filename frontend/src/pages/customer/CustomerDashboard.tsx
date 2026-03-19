@@ -1,4 +1,3 @@
-import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, MapPin, ShoppingCart, Bell, LogOut, Star, Package } from 'lucide-react';
@@ -16,6 +15,7 @@ import ProductCard from '@/components/customer/ProductCard';
 import OrderCard from '@/components/customer/OrderCard';
 import ProductDetail from '@/components/customer/ProductDetail';
 import NotificationPanel from '@/components/common/NotificationPanel';
+import { Link } from 'react-router-dom'; // added for profile link
 
 export default function CustomerDashboard() {
   const { user, logout } = useAuth();
@@ -215,14 +215,22 @@ export default function CustomerDashboard() {
                 </AnimatePresence>
               </div>
 
- {/* User Menu */}
-<div className="flex items-center space-x-2">
-  <Link to="/profile">
-    <span className="hidden sm:block text-sm font-medium cursor-pointer hover:text-blue-600">
-      {user?.fullName}
-    </span>
-  </Link>
-</div>
+              {/* User Menu */}
+              <div className="flex items-center space-x-2">
+                <Link to="/profile">
+                  <span className="hidden sm:block text-sm font-medium cursor-pointer hover:text-blue-600">
+                    {user?.fullName}
+                  </span>
+                </Link>
+              </div>
+
+              <Button size="icon" variant="ghost" onClick={logout}>
+                <LogOut className="w-5 h-5" />
+              </Button>
+            </div>
+          </div>
+        </div>
+      </header>
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
