@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Bike, MapPin, Package, Bell, LogOut, Power, DollarSign, CheckCircle, Navigation } from 'lucide-react';
@@ -194,10 +195,14 @@ export default function RiderDashboard() {
               >
                 <Bike className="w-5 h-5 text-white" />
               </motion.div>
-              <div>
-                <h1 className="text-xl font-bold text-gray-900">Rider Dashboard</h1>
-                <p className="text-xs text-gray-500">{rider?.riderName}</p>
-              </div>
+             <div>
+               <h1 className="text-xl font-bold text-gray-900">Rider Dashboard</h1>
+               <Link to="/profile">
+               <p className="text-xs text-gray-500 cursor-pointer hover:text-blue-600">
+                  {rider?.riderName}
+               </p>
+               </Link>
+                </div>
             </div>
 
             <div className="flex items-center space-x-4">
