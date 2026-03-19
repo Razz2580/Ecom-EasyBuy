@@ -16,7 +16,7 @@ import SellerOrderCard from '@/components/seller/SellerOrderCard';
 import NotificationPanel from '@/components/common/NotificationPanel';
 
 export default function SellerDashboard() {
-  const { logout } = useAuth();
+  const { user, logout } = useAuth();
   const [seller, setSeller] = useState<Seller | null>(null);
   const [products, setProducts] = useState<Product[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
@@ -151,9 +151,9 @@ export default function SellerDashboard() {
               </motion.div>
              <div>
               <Link to="/profile">
-              <h1 className="text-xl font-bold text-gray-900 cursor-pointer hover:text-blue-600">
-              {seller?.storeName || 'My Store'}
-              </h1>
+                <h1 className="text-xl font-bold text-gray-900 cursor-pointer hover:text-blue-600">
+                    {user?.fullName || 'My Store'}
+                </h1>
               </Link>
               <p className="text-xs text-gray-500">Seller Dashboard</p>
               </div>
