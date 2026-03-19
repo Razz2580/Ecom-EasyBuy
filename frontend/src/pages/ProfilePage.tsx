@@ -3,7 +3,7 @@ import { useAuth } from '@/context/AuthContext';
 import { apiService } from '@/services/apiService';
 
 const ProfilePage = () => {
-  const { user, setUser } = useAuth(); // make sure setUser updates context
+  const { user, updateUser } = useAuth();
   const [fullName, setFullName] = useState(user?.fullName || '');
   const [phone, setPhone] = useState(user?.phone || '');
   const [address, setAddress] = useState(user?.address || '');
@@ -12,12 +12,16 @@ const ProfilePage = () => {
   const handleSave = async () => {
     setLoading(true);
     try {
-      const updated = await apiService.updateUserProfile({ fullName, phone, address });
-      // Update context with new data
-      setUser({ ...user, ...updated });
-      alert('Profile updated');
+      const updatedUser = await apiService.updateUserProfile({
+        fullName,
+        phone,
+        address,
+      });
+      updateUser(updatedUser);
+      alert('Profile updated successfully');
     } catch (error) {
       console.error(error);
+      alert('Failed to update profile');
     } finally {
       setLoading(false);
     }
@@ -26,7 +30,7 @@ const ProfilePage = () => {
   return (
     <div className="max-w-md mx-auto mt-10 p-6 bg-white rounded shadow">
       <h2 className="text-2xl font-bold mb-4">My Profile</h2>
-      <p><strong>Email:</strong> {user.email}</p>
+      <p className="mb-2"><strong>Email:</strong> {user?.email}</p>
       <div className="mb-4">
         <label className="block mb-1">Full Name</label>
         <input
