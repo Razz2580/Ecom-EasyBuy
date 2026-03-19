@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Bell, Check, X } from 'lucide-react';
+import { Bell, Check, X, CheckCheck } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import type { Notification } from '@/types';
@@ -8,9 +8,10 @@ interface NotificationPanelProps {
   notifications: Notification[];
   onClose: () => void;
   onMarkRead: (id: number) => void;
+  onMarkAllRead?: () => void; // optional new prop
 }
 
-export default function NotificationPanel({ notifications, onClose, onMarkRead }: NotificationPanelProps) {
+export default function NotificationPanel({ notifications, onClose, onMarkRead, onMarkAllRead }: NotificationPanelProps) {
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.95, y: 10 }}
@@ -23,9 +24,16 @@ export default function NotificationPanel({ notifications, onClose, onMarkRead }
           <Bell className="w-5 h-5 text-gray-500" />
           <h3 className="font-semibold">Notifications</h3>
         </div>
-        <Button size="icon" variant="ghost" onClick={onClose}>
-          <X className="w-4 h-4" />
-        </Button>
+        <div className="flex items-center space-x-1">
+          {onMarkAllRead && notifications.some(n => !n.isRead) && (
+            <Button size="icon" variant="ghost" onClick={onMarkAllRead} title="Mark all as read">
+              <CheckCheck className="w-4 h-4" />
+            </Button>
+          )}
+          <Button size="icon" variant="ghost" onClick={onClose}>
+            <X className="w-4 h-4" />
+          </Button>
+        </div>
       </div>
 
       <ScrollArea className="h-80">
